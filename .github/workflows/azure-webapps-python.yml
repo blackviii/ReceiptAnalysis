@@ -28,15 +28,11 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
 
-      # Optional: Add step to run tests here (PyTest, Django test suites, etc.)
-
       - name: Upload artifact for deployment jobs
         uses: actions/upload-artifact@v3
         with:
           name: python-app
-          path: |
-            .
-            !venv/
+          path: .
 
   deploy:
     permissions:
@@ -53,6 +49,9 @@ jobs:
         with:
           name: python-app
           path: .
+
+      - name: 'Set Azure Storage Connection String'
+        run: echo "AZURE_STORAGE_CONNECTION_STRING=${{ secrets.AZURE_STORAGE_CONNECTION_STRING }}" >> $GITHUB_ENV
 
       - name: 'Deploy to Azure Web App'
         id: deploy-to-webapp
