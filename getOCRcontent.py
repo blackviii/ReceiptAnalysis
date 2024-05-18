@@ -14,6 +14,9 @@ document_analysis_client = DocumentAnalysisClient(
 # 本地图片路径
 local_image_path = "/Users/mimashi8888/Downloads/WX20240515-104831@2x.png"
 
+
+
+
 # 打开本地图片文件
 with open(local_image_path, "rb") as image_file:
     image_data = image_file.read()
