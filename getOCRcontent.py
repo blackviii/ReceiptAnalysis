@@ -67,5 +67,5 @@ for idx, receipt in enumerate(receipts.documents):
     total = receipt.fields.get("Total")
     if total:
         print("Total: {} has confidence: {}".format(total.value, total.confidence))
-    print("--------------------------------------")
+    print("---------------------------------------")
 
