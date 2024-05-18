@@ -4,13 +4,10 @@ import os
 
 app = Flask(__name__)
 
-
 # Azure Blob 存储设置
-# 移除连接字符串，改为从环境变量中读取
 connect_str = os.getenv('AZURE_STORAGE_CONNECTION_STRING')
 container_name = "receipt-storage"
 blob_service_client = BlobServiceClient.from_connection_string(connect_str)
-
 
 @app.route('/')
 def home():
@@ -35,4 +32,4 @@ def uploaded_file(filename):
     return f'File uploaded successfully. Public URL: <a href="{url}">{url}</a>'
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host='0.0.0.0', port=8000)  # 确保在容器中使用正确的端口
