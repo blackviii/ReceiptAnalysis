@@ -77,6 +77,9 @@ jobs:
         with:
           name: python-app
           path: .
+          
+      - name: Set environment variable
+        run: echo "AZURE_STORAGE_CONNECTION_STRING=${{ secrets.AZURE_STORAGE_CONNECTION_STRING }}" >> $GITHUB_ENV
 
       - name: 'Deploy to Azure Web App'
         id: deploy-to-webapp

@@ -4,10 +4,13 @@ import os
 
 app = Flask(__name__)
 
+
 # Azure Blob 存储设置
-connect_str = "https://testcurrenttime.azurewebsites.net/"
+# 移除连接字符串，改为从环境变量中读取
+connect_str = os.getenv('AZURE_STORAGE_CONNECTION_STRING')
 container_name = "receipt-storage"
 blob_service_client = BlobServiceClient.from_connection_string(connect_str)
+
 
 @app.route('/')
 def home():
