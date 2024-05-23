@@ -1,13 +1,10 @@
 from flask import Flask, request, redirect, url_for, render_template
-from azure.storage.blob import BlobServiceClient, BlobClient, ContainerClient
-import os
+from getOcrContentByUrl import getOcrContentByUrl
+from getUrlByUploadImage import upload_image_and_get_url
+from processWithOpenAI import process_string_with_openai
+
 
 app = Flask(__name__)
-
-# Azure Blob 存储设置
-connect_str = os.getenv('AZURE_STORAGE_CONNECTION_STRING')
-container_name = "receipt-storage"
-blob_service_client = BlobServiceClient.from_connection_string(connect_str)
 
 @app.route('/')
 def home():
@@ -21,15 +18,11 @@ def upload():
     if file.filename == '':
         return redirect(request.url)
     if file:
-        blob_client = blob_service_client.get_blob_client(container=container_name, blob=file.filename)
-        blob_client.upload_blob(file)
-        return redirect(url_for('uploaded_file', filename=file.filename))
-
-@app.route('/uploads/<filename>')
-def uploaded_file(filename):
-    blob_client = blob_service_client.get_blob_client(container=container_name, blob=filename)
-    url = blob_client.url
-    return f'File uploaded successfully. Public URL: <a href="{url}">{url}</a>'
+        url = upload_image_and_get_url(file)
+        ocr_result = getOcrContentByUrl(url)
+        formatted_result = process_string_with_openai(ocr_result)  # 调用新的功能
+        #formatted_result = ocr_result #取代上面的调用，下次注释掉这一样，换成上一行就行了
+        return render_template('result.html', url=url, result=formatted_result)  # 在网页上显示格式化结果
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=8000)  # 确保在容器中使用正确的端口
